@@ -55,10 +55,9 @@ jobs:
 
       # --- Build and push Docker image to GHCR (only on successful push to main/master) ---
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: ${{ success() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
         with:
-          registry: docker.io
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
@@ -71,7 +70,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USER }}/prueba_actions:latest
-            ${{ secrets.DOCKER_USER }}/prueba_actions:${{ github.sha }}
+         
 
       # --- PASO AÑADIDO PARA DEPLOY ---
       - name: Trigger Render deploy
