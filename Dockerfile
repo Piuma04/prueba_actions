@@ -1,34 +1,23 @@
 # Dockerfile
 
 # --- Etapa 1: Build (Construcción) ---
-# Usamos una imagen de Node para construir la app
 FROM node:lts-alpine AS builder
 WORKDIR /app
-
-# Copiamos solo los archivos de dependencias e instalamos
 COPY package*.json ./
 RUN npm ci
-
-# Copiamos el resto del código y construimos la app
 COPY . .
 RUN npm run build
-# 'npm run build' crea la carpeta 'dist'
 
 # --- Etapa 2: Production (Producción) ---
-# Usamos una imagen de Node más ligera para correr la app
 FROM node:lts-alpine
 WORKDIR /app
 
-# Copiamos solo lo necesario de la etapa de 'build'
 COPY --from=builder /app/dist ./dist
-COPY package.json ./
+COPY package*.json ./  
+# <-- Arreglado: Copia 'package.json' Y 'package-lock.json'
 
-# Instalamos SOLO las dependencias de producción (ej. 'vite' para 'preview')
+# 'npm ci' ahora funciona Y 'vite' se instalará porque está en 'dependencies'
 RUN npm ci --omit=dev
 
-# Exponemos el puerto que usa 'vite preview' (suele ser 4173 o 3000)
-# Revisa tu terminal al correr 'npm run preview' para estar seguro
-EXPOSE 5173
-
-# El comando para iniciar la app
+EXPOSE 4173
 CMD [ "npm", "run", "preview" ]
