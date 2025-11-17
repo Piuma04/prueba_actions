@@ -28,7 +28,7 @@ RUN npm ci --omit=dev
 
 # Exponemos el puerto que usa 'vite preview' (suele ser 4173 o 3000)
 # Revisa tu terminal al correr 'npm run preview' para estar seguro
-EXPOSE 4173
+EXPOSE 5173
 
 # El comando para iniciar la app
 CMD [ "npm", "run", "preview" ]
