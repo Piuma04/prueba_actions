@@ -46,9 +46,10 @@ jobs:
 
       # --- PASO AÑADIDO PARA DEPLOY ---
       - name: Trigger Render deploy
-        # Condición: Solo se ejecuta si...
-        # 1. El evento es un 'push' (no un 'pull_request')
-        # 2. La rama es 'main' o 'master'
-        # 3. Los pasos anteriores (tests) fueron exitosos
-        if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
-        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+        # Run only on successful pushes to main/master (tests must pass).
+        if: ${{ success() && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          # Trigger Render deploy via webhook. Use -f to fail on HTTP errors.
+          curl -fsS -X POST "$RENDER_DEPLOY_HOOK"
