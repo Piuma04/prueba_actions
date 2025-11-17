@@ -28,7 +28,12 @@ jobs:
       # Es buena idea construir tu app antes de testear
       # para simular el entorno de producción.
       - name: Build Vite app (Recomendado)
-        run: npm run dev
+        run: npm run build
+      
+      # Start a local static server for the built app on port 5173
+      - name: Start Vite preview (serve built files)
+        run: |
+          npm run preview -- --port 5173 &
 
       - name: Wait for preview server
         # use npx wait-on to wait until the server responds on the expected URL
